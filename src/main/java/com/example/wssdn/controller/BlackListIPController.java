@@ -25,9 +25,12 @@ public class BlackListIPController {
         return blackListIPRepository.findAll();
     }
 
-    @PostMapping("/agregarIp/{ip}")
-    public ResponseEntity<String> agregarIp(@PathVariable String ip){
-        Optional<BlackListIP> blackListIP = blackListIPRepository.agregarIp(ip);
+    @PostMapping("/{ipOrg}/{portOrg}/{ipDst}/{portDst}")
+    public ResponseEntity<String> agregarIp(@PathVariable String ipOrg,
+                                            @PathVariable String portOrg,
+                                            @PathVariable String ipDst,
+                                            @PathVariable String portDst){
+        Optional<BlackListIP> blackListIP = blackListIPRepository.agregarIp(ipOrg);
 
         if(blackListIP.isPresent()){
             return ResponseEntity.ok("IP agregada correctamente a la lista negra");
