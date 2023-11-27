@@ -29,11 +29,11 @@ public class BlackListIPController {
     }
 
     @Transactional
-    @PostMapping("/agregarIp/{ipSrc}/{portSrc}/{ipDst}/{portDst}")
-    public ResponseEntity<String> saveIp(@PathVariable String ipSrc,
-                                         @PathVariable int portSrc,
-                                         @PathVariable String ipDst,
-                                         @PathVariable int portDst) {
+    @PostMapping("/agregarIp")
+    public ResponseEntity<String> saveIp(@RequestParam("ipSrc") String ipSrc,
+                                         @RequestParam("portSrc") int portSrc,
+                                         @RequestParam("ipDst") String ipDst,
+                                         @RequestParam("portDst") int portDst) {
         try {
             blackListIPRepository.agregarIp(ipSrc, ipDst, portSrc, portDst);
             return ResponseEntity.ok("IP agregada correctamente a la lista negra");
