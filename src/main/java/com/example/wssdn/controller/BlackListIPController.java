@@ -29,14 +29,20 @@ public class BlackListIPController {
     public ResponseEntity<String> agregarIp(@PathVariable String ipOrg,
                                             @PathVariable String portOrg,
                                             @PathVariable String ipDst,
-                                            @PathVariable String portDst){
-        Optional<BlackListIP> blackListIP = blackListIPRepository.agregarIp(ipOrg);
+                                            @PathVariable String portDst) {
+        try {
+            Optional<BlackListIP> blackListIP = blackListIPRepository.agregarIp(ipOrg);
 
-        if(blackListIP.isPresent()){
-            return ResponseEntity.ok("IP agregada correctamente a la lista negra");
-        }else{
+            if (blackListIP.isPresent()) {
+                return ResponseEntity.ok("IP agregada correctamente a la lista negra");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("No se pudo agregar la IP a la lista negra");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();  // Loguea la excepción
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("No se pudo agregar la IP a la lista negra");
+                    .body("Error interno del servidor al agregar la IP");
         }
     }
 
