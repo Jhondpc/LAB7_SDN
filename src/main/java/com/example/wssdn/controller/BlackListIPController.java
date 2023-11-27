@@ -2,6 +2,7 @@ package com.example.wssdn.controller;
 
 import com.example.wssdn.entity.BlackListIP;
 import com.example.wssdn.repository.BlackListIpRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/blacklist")
+@Transactional
 public class BlackListIPController {
     private final BlackListIpRepository blackListIPRepository;
 
