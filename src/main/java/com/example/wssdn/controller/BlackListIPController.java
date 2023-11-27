@@ -29,7 +29,7 @@ public class BlackListIPController {
     }
 
     @Transactional
-    @PostMapping("/{ipSrc}/{portSrc}/{ipDst}/{portDst}")
+    @PostMapping("/agregarIp/{ipSrc}/{portSrc}/{ipDst}/{portDst}")
     public ResponseEntity<String> saveIp(@PathVariable String ipSrc,
                                          @PathVariable int portSrc,
                                          @PathVariable String ipDst,
