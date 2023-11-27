@@ -40,7 +40,7 @@ public class BlackListIPController {
                         .body("No se pudo agregar la IP a la lista negra");
             }
         } catch (Exception e) {
-            e.printStackTrace();  
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error interno del servidor al agregar la IP");
         }
