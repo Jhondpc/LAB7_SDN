@@ -28,13 +28,20 @@ public class BlackListIPController {
         return blackListIPRepository.findAll();
     }
 
-    @Transactional
     @PostMapping("/agregarIp")
-    public ResponseEntity<String> saveIp(@RequestParam("ipSrc") String ipSrc,
+    public String saveIp(@RequestParam("ipSrc") String ipSrc,
                                          @RequestParam("portSrc") int portSrc,
                                          @RequestParam("ipDst") String ipDst,
                                          @RequestParam("portDst") int portDst) {
-        try {
+        BlackListIP blackListIP = new BlackListIP();
+        blackListIP.setIpSrc(ipSrc);
+        blackListIP.setIpDst(ipDst);
+        blackListIP.setPortSrc(portSrc);
+        blackListIP.setPortDst(portDst);
+
+        blackListIPRepository.save(blackListIP);
+        return "redirect:/blacklist";
+        /*try {
             blackListIPRepository.agregarIp(ipSrc, ipDst, portSrc, portDst);
             return ResponseEntity.ok("IP agregada correctamente a la lista negra");
         } catch (DataAccessException e) {
@@ -46,6 +53,8 @@ public class BlackListIPController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error de transacción al agregar la IP" + ipSrc + " " + ipDst + " " + portSrc + " " + portDst);
         }
+
+         */
     }
 
 

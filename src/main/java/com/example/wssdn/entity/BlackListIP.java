@@ -18,10 +18,10 @@ public class BlackListIP {
     private String ipDst;
 
     @Column(name = "port_src")
-    private String portSrc;
+    private int portSrc;
 
     @Column(name = "port_dst")
-    private String portDst;
+    private int portDst;
 
     public int getId() {
         return id;
@@ -47,19 +47,19 @@ public class BlackListIP {
         this.ipDst = ipDst;
     }
 
-    public String getPortSrc() {
+    public int getPortSrc() {
         return portSrc;
     }
 
-    public void setPortSrc(String portSrc) {
+    public void setPortSrc(int portSrc) {
         this.portSrc = portSrc;
     }
 
-    public String getPortDst() {
+    public int getPortDst() {
         return portDst;
     }
 
-    public void setPortDst(String portDst) {
+    public void setPortDst(int portDst) {
         this.portDst = portDst;
     }
 }
