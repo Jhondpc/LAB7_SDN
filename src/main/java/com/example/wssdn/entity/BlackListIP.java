@@ -1,6 +1,6 @@
 package com.example.wssdn.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "black_ips")
