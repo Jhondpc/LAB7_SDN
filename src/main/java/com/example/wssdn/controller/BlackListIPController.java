@@ -3,7 +3,9 @@ package com.example.wssdn.controller;
 import com.example.wssdn.entity.BlackListIP;
 import com.example.wssdn.repository.BlackListIpRepository;
 import jakarta.transaction.Transactional;
+import org.hibernate.TransactionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +15,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/blacklist")
-@Transactional
 public class BlackListIPController {
     private final BlackListIpRepository blackListIPRepository;
 
@@ -27,20 +28,26 @@ public class BlackListIPController {
         return blackListIPRepository.findAll();
     }
 
+    @Transactional
     @PostMapping("/{ipSrc}/{portSrc}/{ipDst}/{portDst}")
-    public ResponseEntity<String> agregarIp(@PathVariable String ipSrc,
-                                            @PathVariable int portSrc,
-                                            @PathVariable String ipDst,
-                                            @PathVariable int portDst) {
+    public ResponseEntity<String> saveIp(@PathVariable String ipSrc,
+                                         @PathVariable int portSrc,
+                                         @PathVariable String ipDst,
+                                         @PathVariable int portDst) {
         try {
             blackListIPRepository.agregarIp(ipSrc, ipDst, portSrc, portDst);
             return ResponseEntity.ok("IP agregada correctamente a la lista negra");
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error interno del servidor al agregar la IP" + ipSrc + " " + ipDst + " " + portSrc + " " + portDst);
+                    .body("Error de acceso a datos al agregar la IP" + ipSrc + " " + ipDst + " " + portSrc + " " + portDst);
+        } catch (TransactionException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error de transacción al agregar la IP" + ipSrc + " " + ipDst + " " + portSrc + " " + portDst);
         }
     }
+
 
     @DeleteMapping("/borrarIp/{ip}")
     public ResponseEntity<String> eliminarIp(@PathVariable String ip){
