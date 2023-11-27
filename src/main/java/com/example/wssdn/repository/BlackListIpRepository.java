@@ -10,7 +10,6 @@ import java.util.Optional;
 
 public interface BlackListIpRepository extends JpaRepository<BlackListIP, Integer> {
 
-    @Transactional
     @Modifying
     @Query(value = "INSERT INTO black_ips (ip_src, ip_dst, port_src, port_dst) VALUES (?1, ?2, ?3, ?4)", nativeQuery = true)
     void agregarIp(String ipSrc, String ipDst, int portSrc, int portDst);
