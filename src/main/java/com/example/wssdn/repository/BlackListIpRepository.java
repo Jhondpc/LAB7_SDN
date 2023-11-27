@@ -11,11 +11,11 @@ import java.util.Optional;
 public interface BlackListIpRepository extends JpaRepository<BlackListIP, Integer> {
 
     @Modifying
-    @Query(value = "INSERT INTO blacklist.black_ips (ip) VALUES (?1) RETURNING *", nativeQuery = true)
+    @Query(value = "INSERT INTO blacklist.black_ips (ip_src, ip_dst, port_src, port_dst) VALUES (?1, ?2, ?3, ?4) RETURNING *", nativeQuery = true)
     @Transactional
-    Optional<BlackListIP> agregarIp(String ip);
+    Optional<BlackListIP> agregarIp(String ipSrc, String ipDst, int portSrc, int portDst);
 
 
-    @Query(value = "SELECT * FROM blacklist.black_ips WHERE ip = ?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM blacklist.black_ips WHERE ip_src = ?1", nativeQuery = true)
     Optional<BlackListIP> obtenerIpPorId(String ip);
 }

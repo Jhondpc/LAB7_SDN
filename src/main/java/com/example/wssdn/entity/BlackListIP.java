@@ -11,8 +11,17 @@ public class BlackListIP {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "ip")
-    private String ipAddress;
+    @Column(name = "ip_src")
+    private String ipSrc;
+
+    @Column(name = "ip_dst")
+    private String ipDst;
+
+    @Column(name = "port_src")
+    private String portSrc;
+
+    @Column(name = "port_dst")
+    private String portDst;
 
     public int getId() {
         return id;
@@ -22,12 +31,36 @@ public class BlackListIP {
         this.id = id;
     }
 
-    public String getIpAddress() {
-        return ipAddress;
+    public String getIpSrc() {
+        return ipSrc;
     }
 
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
+    public void setIpSrc(String ipSrc) {
+        this.ipSrc = ipSrc;
+    }
+
+    public String getIpDst() {
+        return ipDst;
+    }
+
+    public void setIpDst(String ipDst) {
+        this.ipDst = ipDst;
+    }
+
+    public String getPortSrc() {
+        return portSrc;
+    }
+
+    public void setPortSrc(String portSrc) {
+        this.portSrc = portSrc;
+    }
+
+    public String getPortDst() {
+        return portDst;
+    }
+
+    public void setPortDst(String portDst) {
+        this.portDst = portDst;
     }
 }
 

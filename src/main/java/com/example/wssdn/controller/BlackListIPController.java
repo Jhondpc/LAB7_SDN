@@ -25,13 +25,13 @@ public class BlackListIPController {
         return blackListIPRepository.findAll();
     }
 
-    @PostMapping("/{ipOrg}/{portOrg}/{ipDst}/{portDst}")
-    public ResponseEntity<String> agregarIp(@PathVariable String ipOrg,
-                                            @PathVariable String portOrg,
+    @PostMapping("/{ipSrc}/{portSrc}/{ipDst}/{portDst}")
+    public ResponseEntity<String> agregarIp(@PathVariable String ipSrc,
+                                            @PathVariable int portSrc,
                                             @PathVariable String ipDst,
-                                            @PathVariable String portDst) {
+                                            @PathVariable int portDst) {
         try {
-            Optional<BlackListIP> blackListIP = blackListIPRepository.agregarIp(ipOrg);
+            Optional<BlackListIP> blackListIP = blackListIPRepository.agregarIp(ipSrc, ipDst, portSrc, portDst);
 
             if (blackListIP.isPresent()) {
                 return ResponseEntity.ok("IP agregada correctamente a la lista negra");
@@ -40,7 +40,7 @@ public class BlackListIPController {
                         .body("No se pudo agregar la IP a la lista negra");
             }
         } catch (Exception e) {
-            e.printStackTrace();  // Loguea la excepción
+            e.printStackTrace();  
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error interno del servidor al agregar la IP");
         }
