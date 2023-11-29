@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.json.JsonArray;
 import jakarta.transaction.Transactional;
-import org.apache.http.HttpEntity;  // Importación correcta
+import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;  // Importación correcta
 
 import org.apache.http.client.methods.HttpPost;
@@ -22,7 +22,10 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpEntity;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -75,7 +78,7 @@ public class BlackListIPController {
 
             // Devolver una respuesta de éxito
             return ResponseEntity.ok("IP agregada correctamente a la lista negra y enviada a Floodlight");
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error al enviar la IP a la lista negra en Floodlight: " + e.getMessage());
@@ -132,49 +135,36 @@ public class BlackListIPController {
         return dispositivosConectados;
     }
 
-    private void enviarIpAControladorFloodlight(String ipSrc, String ipDst, int portSrc, int portDst) throws IOException {
-        String url = "http://10.20.12.215:8080/wm/staticflowentrypusher/json";
-
-        //JSON PARA BLOQUEAR TODO EL TRÁFICO ENTRANTE A IPSRC
-        String jsonBody = String.format(
-                "{ \"name\":\"flow-mod-ip-%s\", \"cookie\":\"0\", \"priority\":\"32768\", " +
-                        "\"active\":\"true\", \"actions\":\"drop\", " +
-                        "\"match\":\"ipv4_src=%s\" }",
-                ipSrc, ipSrc);
-        /*
-        //JSON PARA BLOQUEAR TRÁFICO ENTRE IPS
-        String jsonBody = String.format(
-                "{ \"name\":\"flow-mod-ip-%s-%s\", \"cookie\":\"0\", \"priority\":\"32768\", " +
-                        "\"active\":\"true\", \"actions\":\"drop\", " +
-                        "\"match\":\"ipv4_src=%s,ipv4_dst=%s,tcp_src=%d,tcp_dst=%d\" }",
-                ipSrc, ipDst, ipSrc, ipDst, portSrc, portDst);
-
-         */
-        // Configurar la solicitud HTTP POST
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
-                .build();
-
+    private void enviarIpAControladorFloodlight(String ipSrc, String ipDst, int portSrc, int portDst) {
         try {
+            String url = "http://10.20.12.215:8080/wm/staticflowentrypusher/json";
+
+            String jsonBody = String.format(
+                    "{ \"name\":\"block-ip-%s\", \"cookie\":\"0\", \"priority\":\"32768\", " +
+                            "\"active\":\"true\", \"actions\":\"drop\", " +
+                            "\"match\":\"ipv4_src=%s\" }",
+                    ipSrc, ipSrc);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            // Utiliza la clase correcta: HttpEntity de Spring
+            HttpEntity<String> requestEntity = new HttpEntity<>(jsonBody, headers);
+
+            // Configurar RestTemplate
+            RestTemplate restTemplate = new RestTemplate();
+
             // Enviar la solicitud
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, requestEntity, String.class);
 
-            // Manejar la respuesta si es necesario
-            int statusCode = response.statusCode();
-            String responseBody = response.body();
-            System.out.println("Código de estado: " + statusCode);
-            System.out.println("Cuerpo de la respuesta: " + responseBody);
-
-            // Puedes revisar el código de estado en statusCode
-            // No olvides manejar excepciones si algo sale mal durante la solicitud
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Manejar la excepción según tus necesidades
-            throw e; // Asegúrate de relanzar la excepción para que sea capturada por el bloque catch en el método saveIp
-        } catch (InterruptedException e) {
+            // Manejar la respuesta
+            if (responseEntity.getStatusCode() == HttpStatus.OK) {
+                System.out.println("Regla de bloqueo de tráfico hacia " + ipSrc + " agregada correctamente.");
+            } else {
+                System.err.println("Error al agregar la regla: " + responseEntity.getBody());
+                // Puedes lanzar una excepción específica si lo deseas
+            }
+        } catch (Exception e) {
             e.printStackTrace();
             // Manejar la excepción según tus necesidades
         }
