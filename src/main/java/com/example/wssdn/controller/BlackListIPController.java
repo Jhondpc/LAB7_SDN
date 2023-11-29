@@ -135,12 +135,21 @@ public class BlackListIPController {
     private void enviarIpAControladorFloodlight(String ipSrc, String ipDst, int portSrc, int portDst) throws IOException {
         String url = "http://10.20.12.215:8080/wm/staticflowentrypusher/json";
 
+        //JSON PARA BLOQUEAR TODO EL TRÁFICO ENTRANTE A IPSRC
+        String jsonBody = String.format(
+                "{ \"name\":\"flow-mod-ip-%s\", \"cookie\":\"0\", \"priority\":\"32768\", " +
+                        "\"active\":\"true\", \"actions\":\"drop\", " +
+                        "\"match\":\"ipv4_src=%s\" }",
+                ipSrc, ipSrc);
+        /*
+        //JSON PARA BLOQUEAR TRÁFICO ENTRE IPS
         String jsonBody = String.format(
                 "{ \"name\":\"flow-mod-ip-%s-%s\", \"cookie\":\"0\", \"priority\":\"32768\", " +
                         "\"active\":\"true\", \"actions\":\"drop\", " +
                         "\"match\":\"ipv4_src=%s,ipv4_dst=%s,tcp_src=%d,tcp_dst=%d\" }",
                 ipSrc, ipDst, ipSrc, ipDst, portSrc, portDst);
 
+         */
         // Configurar la solicitud HTTP POST
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
