@@ -42,11 +42,11 @@ public class BlackListIPController {
     }
 
     @GetMapping("/listarIps")
-    public List<BlackListIP> obtenerIps() {
+    public List<String> obtenerIps() {
         // Obtener las IPs desde la base de datos local
         List<BlackListIP> blackListIPs = blackListIPRepository.findAll();
-        return blackListIPs;
-        /*
+        //return blackListIPs;
+
         try {
             // Consultar la API REST del Floodlight para obtener información sobre los dispositivos conectados
             List<String> dispositivosConectados = obtenerDispositivosConectadosDesdeFloodlight();
@@ -55,15 +55,13 @@ public class BlackListIPController {
             // ...
 
             // Devolver la lista de IPs desde la base de datos local
-            return blackListIPs;
+            return dispositivosConectados;
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             // Manejar la excepción según tus necesidades
             // Puedes lanzar una excepción personalizada, loggear el error, etc.
             return Collections.emptyList(); // Otra opción podría ser devolver una lista vacía en caso de error
         }
-
- */
     }
 
     @PostMapping("/agregarIp")
@@ -105,7 +103,7 @@ public class BlackListIPController {
     }
 
     private List<String> obtenerDispositivosConectadosDesdeFloodlight() throws IOException, InterruptedException {
-        String url = "http://10.20.12.215:8080/wm/device/";
+        String url = "http://192.168.201.200:8080/wm/device/";
 
         // Configurar la solicitud HTTP GET
         HttpClient client = HttpClient.newHttpClient();
