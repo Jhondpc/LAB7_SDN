@@ -45,7 +45,8 @@ public class BlackListIPController {
     public List<BlackListIP> obtenerIps() {
         // Obtener las IPs desde la base de datos local
         List<BlackListIP> blackListIPs = blackListIPRepository.findAll();
-
+        return blackListIPs;
+        /*
         try {
             // Consultar la API REST del Floodlight para obtener información sobre los dispositivos conectados
             List<String> dispositivosConectados = obtenerDispositivosConectadosDesdeFloodlight();
@@ -61,6 +62,8 @@ public class BlackListIPController {
             // Puedes lanzar una excepción personalizada, loggear el error, etc.
             return Collections.emptyList(); // Otra opción podría ser devolver una lista vacía en caso de error
         }
+
+ */
     }
 
     @PostMapping("/agregarIp")
