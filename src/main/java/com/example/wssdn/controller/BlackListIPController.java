@@ -2,6 +2,7 @@ package com.example.wssdn.controller;
 
 import com.example.wssdn.entity.BlackListIP;
 import com.example.wssdn.repository.BlackListIpRepository;
+import jakarta.json.JsonArray;
 import jakarta.transaction.Transactional;
 import org.apache.http.HttpEntity;  // Importación correcta
 import org.apache.http.entity.StringEntity;  // Importación correcta
@@ -24,11 +25,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
+import java.util.*;
 
 
 @RestController
@@ -116,16 +113,26 @@ public class BlackListIPController {
         // Enviar la solicitud
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        // Manejar la respuesta si es necesario
-        int statusCode = response.statusCode();
-        String responseBody = response.body();
-        // Loggear o manejar la respuesta según tus necesidades
-        System.out.println("Código de estado: " + statusCode);
-        System.out.println("Cuerpo de la respuesta: " + responseBody);
+        // Verificar si la solicitud fue exitosa (código de estado 200)
+        if (response.statusCode() == 200) {
+            // Parsear la respuesta JSON para obtener la lista de dispositivos
+            List<String> dispositivosConectados = parsearRespuestaFloodlight(response.body());
 
-        // Aquí deberías parsear la respuesta JSON para extraer la información necesaria
-        // Devuelves una lista de dispositivos conectados como ejemplo, pero esto debe ajustarse según la respuesta real
-        return Arrays.asList("Dispositivo1", "Dispositivo2", "Dispositivo3");
+            // Devolver la lista de dispositivos
+            return dispositivosConectados;
+        } else {
+            // Manejar el caso en el que la solicitud no fue exitosa
+            System.out.println("La solicitud al Floodlight no fue exitosa. Código de estado: " + response.statusCode());
+            return Collections.emptyList();
+        }
+    }
+
+    private List<String> parsearRespuestaFloodlight(String responseBody) {
+        // Aquí deberías implementar la lógica para parsear la respuesta JSON del Floodlight
+        // y extraer la información necesaria. La estructura exacta dependerá de la respuesta real.
+
+        // Por ahora, solo devolver una lista vacía como ejemplo
+        return Collections.emptyList();
     }
 
     private void enviarIpAControladorFloodlight(String ipSrc, String ipDst, int portSrc, int portDst) throws IOException {
