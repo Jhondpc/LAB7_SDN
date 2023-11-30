@@ -131,14 +131,14 @@ public class BlackListIPController {
             String url = "http://10.20.12.215:8080/wm/staticentrypusher/json";
 
             String jsonBody = String.format("{\n" +
-                    "  \"name\": \"block-ip-%s\",\n" +
+                    "  \"switch\": \"72:e0:80:7e:85:4c\",\n" +
+                    "  \"name\": \"block-ip-<ipSrc>\",\n" +
                     "  \"cookie\": \"0\",\n" +
                     "  \"priority\": \"32768\",\n" +
                     "  \"active\": \"true\",\n" +
                     "  \"actions\": \"drop\",\n" +
-                    "  \"match\": \"ipv4_src=%s\"\n" +
+                    "  \"match\": \"ipv4_src=<ipSrc>\"\n" +
                     "}\n", ipSrc, ipSrc);
-
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
