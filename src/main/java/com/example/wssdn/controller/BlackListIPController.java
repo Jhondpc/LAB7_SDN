@@ -65,7 +65,7 @@ public class BlackListIPController {
                                          @RequestParam("ipDst") String ipDst,
                                          @RequestParam("portDst") int portDst) {
         try {
-            // Guardar en la base de datos local
+            //Guardar en la base de datos local
             BlackListIP blackListIP = new BlackListIP();
             blackListIP.setIpSrc(ipSrc);
             blackListIP.setIpDst(ipDst);
@@ -73,10 +73,10 @@ public class BlackListIPController {
             blackListIP.setPortDst(portDst);
             blackListIPRepository.save(blackListIP);
 
-            // Enviar la información al controlador Floodlight
+            //Enviar la información al controlador Floodlight
             enviarIpAControladorFloodlight(ipSrc, ipDst, portSrc, portDst);
 
-            // Devolver una respuesta de éxito
+            //Devolver una respuesta de éxito
             return ResponseEntity.ok("IP agregada correctamente a la lista negra y enviada a Floodlight");
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,7 +100,7 @@ public class BlackListIPController {
     private List<String> obtenerDispositivosConectadosDesdeFloodlight() throws IOException, InterruptedException {
         String url = "http://192.168.201.200:8080/wm/device/";
 
-        // Configurar la solicitud HTTP GET
+        //Configura la solicitud HTTP GET
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -108,26 +108,19 @@ public class BlackListIPController {
                 .GET()
                 .build();
 
-        // Enviar la solicitud
+        //Enviar la solicitud
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        // Manejar la respuesta si es necesario
+
         int statusCode = response.statusCode();
         String responseBody = response.body();
-        // Loggear o manejar la respuesta según tus necesidades
-        System.out.println("Código de estado: " + statusCode);
-        System.out.println("Cuerpo de la respuesta: " + responseBody);
 
-        // Aquí deberías parsear la respuesta JSON para extraer la información necesaria
-        // Devuelves una lista de dispositivos conectados como ejemplo, pero esto debe ajustarse según la respuesta real
         List<String> dispositivosConectados = new ArrayList<>();
 
-        // Parsear el JSON y extraer la información necesaria
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
 
         for (JsonNode deviceNode : jsonNode) {
-            // Ejemplo: Obtener la dirección MAC de cada dispositivo
             String macAddress = deviceNode.path("mac").get(0).asText();
             dispositivosConectados.add(macAddress);
         }
@@ -139,34 +132,32 @@ public class BlackListIPController {
         try {
             String url = "http://10.20.12.215:8080/wm/staticflowentrypusher/json";
 
-            String jsonBody = String.format(
-                    "{ \"name\":\"block-ip-%s\", \"cookie\":\"0\", \"priority\":\"32768\", " +
-                            "\"active\":\"true\", \"actions\":\"drop\", " +
-                            "\"match\":\"ipv4_src=%s\" }",
-                    ipSrc, ipSrc);
+            String jsonBody = String.format("{\n" +
+                    "  \"name\": \"block-ip-%s\",\n" +
+                    "  \"cookie\": \"0\",\n" +
+                    "  \"priority\": \"32768\",\n" +
+                    "  \"active\": \"true\",\n" +
+                    "  \"actions\": \"drop\",\n" +
+                    "  \"match\": \"ipv4_src=%s\"\n" +
+                    "}\n", ipSrc, ipSrc);
+
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            // Utiliza la clase correcta: HttpEntity de Spring
             HttpEntity<String> requestEntity = new HttpEntity<>(jsonBody, headers);
 
-            // Configurar RestTemplate
             RestTemplate restTemplate = new RestTemplate();
 
-            // Enviar la solicitud
             ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, requestEntity, String.class);
 
-            // Manejar la respuesta
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
                 System.out.println("Regla de bloqueo de tráfico hacia " + ipSrc + " agregada correctamente.");
             } else {
                 System.err.println("Error al agregar la regla: " + responseEntity.getBody());
-                // Puedes lanzar una excepción específica si lo deseas
             }
         } catch (Exception e) {
             e.printStackTrace();
-            // Manejar la excepción según tus necesidades
         }
     }
 }
