@@ -128,48 +128,9 @@ public class BlackListIPController {
 
     private void enviarIpAControladorFloodlight(String ipSrc, String ipDst, int portSrc, int portDst) {
         try {
-            String url = "http://10.20.12.215:8080/wm/staticflowentrypusher/json";
+            String url = "http://10.20.12.215:8080/wm/staticflowpusher/json";
 
-            String jsonBody = "{\n" +
-                    "  \"flows\": [\n" +
-                    "    {\n" +
-                    "      \"switch\": \"00:00:5e:c7:6e:c6:11:4c\",\n" +
-                    "      \"name\": \"block-ip-switch1-" + ipSrc + "\",\n" +
-                    "      \"cookie\": \"0\",\n" +
-                    "      \"priority\": \"32768\",\n" +
-                    "      \"active\": \"true\",\n" +
-                    "      \"actions\": \"drop\",\n" +
-                    "      \"match\": \"ipv4_src=" + ipSrc + "\"\n" +
-                    "    },\n" +
-                    "    {\n" +
-                    "      \"switch\": \"00:00:f2:20:f9:45:4c:4e\",\n" +
-                    "      \"name\": \"block-ip-switch2-" + ipSrc + "\",\n" +
-                    "      \"cookie\": \"0\",\n" +
-                    "      \"priority\": \"32768\",\n" +
-                    "      \"active\": \"true\",\n" +
-                    "      \"actions\": \"drop\",\n" +
-                    "      \"match\": \"ipv4_src=" + ipSrc + "\"\n" +
-                    "    },\n" +
-                    "    {\n" +
-                    "      \"switch\": \"00:00:72:e0:80:7e:85:4c\",\n" +
-                    "      \"name\": \"block-ip-switch3-" + ipSrc + "\",\n" +
-                    "      \"cookie\": \"0\",\n" +
-                    "      \"priority\": \"32768\",\n" +
-                    "      \"active\": \"true\",\n" +
-                    "      \"actions\": \"drop\",\n" +
-                    "      \"match\": \"ipv4_src=" + ipSrc + "\"\n" +
-                    "    },\n" +
-                    "    {\n" +
-                    "      \"switch\": \"00:00:aa:51:aa:ba:72:41\",\n" +
-                    "      \"name\": \"block-ip-switch4-" + ipSrc + "\",\n" +
-                    "      \"cookie\": \"0\",\n" +
-                    "      \"priority\": \"32768\",\n" +
-                    "      \"active\": \"true\",\n" +
-                    "      \"actions\": \"drop\",\n" +
-                    "      \"match\": \"ipv4_src=" + ipSrc + "\"\n" +
-                    "    }\n" +
-                    "  ]\n" +
-                    "}\n";
+            String jsonBody = String.format("{\"switch\":\"00:00:72:e0:80:7e:85:4c\", \"name\":\"flow-mod-1\", \"cookie\":\"0\", \"priority\":\"32768\", \"ipv4_dst\":\"%s\", \"eth_type\":\"0x0800\", \"active\":\"true\", \"actions\":\"drop\"}", ipSrc);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
