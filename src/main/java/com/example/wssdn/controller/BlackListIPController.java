@@ -77,7 +77,7 @@ public class BlackListIPController {
             enviarIpAControladorFloodlight(ipSrc, ipDst, portSrc, portDst);
 
             //Devolver una respuesta de éxito
-            return ResponseEntity.ok("IP agregada correctamente a la lista negra y enviada a Floodlight");
+            return ResponseEntity.ok("IP "+ipSrc+" agregada correctamente a la lista negra y enviada a Floodlight");
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
