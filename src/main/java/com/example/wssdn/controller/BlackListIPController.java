@@ -130,15 +130,46 @@ public class BlackListIPController {
         try {
             String url = "http://10.20.12.215:8080/wm/staticflowentrypusher/json";
 
-            String jsonBody = String.format("{\n" +
-                    "  \"switch\": \"72:e0:80:7e:85:4c\",\n" +
-                    "  \"name\": \"block-ip-<ipSrc>\",\n" +
-                    "  \"cookie\": \"0\",\n" +
-                    "  \"priority\": \"32768\",\n" +
-                    "  \"active\": \"true\",\n" +
-                    "  \"actions\": \"drop\",\n" +
-                    "  \"match\": \"ipv4_src=<ipSrc>\"\n" +
-                    "}\n", ipSrc, ipSrc);
+            String jsonBody = "{\n" +
+                    "  \"flows\": [\n" +
+                    "    {\n" +
+                    "      \"switch\": \"00:00:5e:c7:6e:c6:11:4c\",\n" +
+                    "      \"name\": \"block-ip-switch1-" + ipSrc + "\",\n" +
+                    "      \"cookie\": \"0\",\n" +
+                    "      \"priority\": \"32768\",\n" +
+                    "      \"active\": \"true\",\n" +
+                    "      \"actions\": \"drop\",\n" +
+                    "      \"match\": \"ipv4_src=" + ipSrc + "\"\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"switch\": \"00:00:f2:20:f9:45:4c:4e\",\n" +
+                    "      \"name\": \"block-ip-switch2-" + ipSrc + "\",\n" +
+                    "      \"cookie\": \"0\",\n" +
+                    "      \"priority\": \"32768\",\n" +
+                    "      \"active\": \"true\",\n" +
+                    "      \"actions\": \"drop\",\n" +
+                    "      \"match\": \"ipv4_src=" + ipSrc + "\"\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"switch\": \"00:00:72:e0:80:7e:85:4c\",\n" +
+                    "      \"name\": \"block-ip-switch3-" + ipSrc + "\",\n" +
+                    "      \"cookie\": \"0\",\n" +
+                    "      \"priority\": \"32768\",\n" +
+                    "      \"active\": \"true\",\n" +
+                    "      \"actions\": \"drop\",\n" +
+                    "      \"match\": \"ipv4_src=" + ipSrc + "\"\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"switch\": \"00:00:aa:51:aa:ba:72:41\",\n" +
+                    "      \"name\": \"block-ip-switch4-" + ipSrc + "\",\n" +
+                    "      \"cookie\": \"0\",\n" +
+                    "      \"priority\": \"32768\",\n" +
+                    "      \"active\": \"true\",\n" +
+                    "      \"actions\": \"drop\",\n" +
+                    "      \"match\": \"ipv4_src=" + ipSrc + "\"\n" +
+                    "    }\n" +
+                    "  ]\n" +
+                    "}\n";
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -150,12 +181,14 @@ public class BlackListIPController {
             ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, requestEntity, String.class);
 
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                System.out.println("Regla de bloqueo de tráfico hacia " + ipSrc + " agregada correctamente.");
+                System.out.println("Reglas de bloqueo de tráfico hacia " + ipSrc + " agregadas correctamente.");
             } else {
-                System.err.println("Error al agregar la regla: " + responseEntity.getBody());
+                System.err.println("Error al agregar las reglas: " + responseEntity.getBody());
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
 }
