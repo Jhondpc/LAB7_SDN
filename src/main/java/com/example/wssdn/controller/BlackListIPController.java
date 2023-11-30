@@ -128,7 +128,7 @@ public class BlackListIPController {
 
     private void enviarIpAControladorFloodlight(String ipSrc, String ipDst, int portSrc, int portDst) {
         try {
-            String url = "http://10.20.12.215:8080/wm/staticentrypusher/json";
+            String url = "http://10.20.12.215:8080/wm/staticflowentrypusher/json";
 
             String jsonBody = String.format("{\n" +
                     "  \"switch\": \"72:e0:80:7e:85:4c\",\n" +
