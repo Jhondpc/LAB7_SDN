@@ -46,16 +46,14 @@ public class BlackListIPController {
     @GetMapping("/listarIps")
     public List<String> obtenerIps() {
         try {
-            // Consultar la API REST del Floodlight para obtener información sobre los dispositivos conectados
+            //Consultar la API REST del Floodlight para obtener información sobre los dispositivos conectados
             List<String> dispositivosConectados = obtenerDispositivosConectadosDesdeFloodlight();
 
-            // Devolver la lista de dispositivos conectados
+            //Devolver la lista de dispositivos conectados
             return dispositivosConectados;
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-            // Manejar la excepción según tus necesidades
-            // Puedes lanzar una excepción personalizada, loggear el error, etc.
-            return Collections.emptyList(); // Otra opción podría ser devolver una lista vacía en caso de error
+            return Collections.emptyList();
         }
     }
 
@@ -130,7 +128,7 @@ public class BlackListIPController {
 
     private void enviarIpAControladorFloodlight(String ipSrc, String ipDst, int portSrc, int portDst) {
         try {
-            String url = "http://10.20.12.215:8080/wm/staticflowentrypusher/json";
+            String url = "http://10.20.12.215:8080/wm/staticentrypusher/json";
 
             String jsonBody = String.format("{\n" +
                     "  \"name\": \"block-ip-%s\",\n" +
