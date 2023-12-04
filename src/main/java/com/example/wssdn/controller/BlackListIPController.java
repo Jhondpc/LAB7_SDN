@@ -130,7 +130,7 @@ public class BlackListIPController {
         try {
             String url = "http://192.168.201.200:8080/wm/staticflowpusher/json";
 
-            String jsonBody = String.format("{\"switch\":\"00:00:f2:20:f9:45:4c:4e\", \"name\":\"flow-mod-1\", \"cookie\":\"0\", \"priority\":\"32768\", \"ipv4_dst\":\"%s\", \"eth_type\":\"0x0800\", \"active\":\"true\", \"actions\":\"drop\"}", ipSrc);
+            String jsonBody = String.format("{\"switch\":\"00:00:72:e0:80:7e:85:4c\", \"name\":\"drop-traffic\", \"cookie\":\"0\", \"priority\":\"32768\", \"ipv4_src\":\"%s\", \"eth_type\":\"0x0800\", \"active\":\"true\", \"actions\":\"drop\"}", ipSrc);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
